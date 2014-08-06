@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Last-login-wordpress : Users Last Login Wordpress">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Last-login-wordpress</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/saisha-satta/Last-Login-Wordpress">View on GitHub</a>
+
+          <h1 id="project_title">Last-login-wordpress</h1>
+          <h2 id="project_tagline">Users Last Login Wordpress</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/saisha-satta/Last-Login-Wordpress/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/saisha-satta/Last-Login-Wordpress/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Place this into your functions.php page     </p>
+
+<pre><code>// insert the last login date for each user
+function insert_last_login( $login ) 
+{
+    global $user_id;
+    $user = get_userdatabylogin( $login );
+    update_user_meta( $user-&gt;ID, 'last_login', gmdate( 'Y-m-d H:i:s' ) ); 
+}
+add_action( 'wp_login', 'insert_last_login' );
+
+
+// add a new "Last Login" user column
+function add_last_login_column( $columns ) 
+{
+    $columns['last_login'] = __( 'Last Login', 'last_login' );
+    return $columns;
+}
+add_filter( 'manage_users_columns', 'add_last_login_column' );
+
+
+// add the "Last Login" user data to the new column
+function add_last_login_column_value( $value, $column_name, $user_id )
+{
+    $user = get_userdata( $user_id );
+
+    if ( 'last_login' == $column_name &amp;&amp; $user-&gt;last_login )
+        $value = date( 'm/d/Y g:ia', strtotime( $user-&gt;last_login ) );
+
+    return $value;
+}
+add_action( 'manage_users_custom_column', 'add_last_login_column_value', 10, 3 );
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Last-login-wordpress maintained by <a href="https://github.com/saisha-satta">saisha-satta</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
