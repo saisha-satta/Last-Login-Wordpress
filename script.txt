@@ -1,0 +1,32 @@
+//Place into functions.php 
+
+// insert the last login date for each user
+function insert_last_login( $login ) 
+{
+    global $user_id;
+    $user = get_userdatabylogin( $login );
+    update_user_meta( $user->ID, 'last_login', gmdate( 'Y-m-d H:i:s' ) ); 
+}
+add_action( 'wp_login', 'insert_last_login' );
+
+
+// add a new "Last Login" user column
+function add_last_login_column( $columns ) 
+{
+    $columns['last_login'] = __( 'Last Login', 'last_login' );
+    return $columns;
+}
+add_filter( 'manage_users_columns', 'add_last_login_column' );
+
+
+// add the "Last Login" user data to the new column
+function add_last_login_column_value( $value, $column_name, $user_id )
+{
+    $user = get_userdata( $user_id );
+
+    if ( 'last_login' == $column_name && $user->last_login )
+        $value = date( 'm/d/Y g:ia', strtotime( $user->last_login ) );
+
+    return $value;
+}
+add_action( 'manage_users_custom_column', 'add_last_login_column_value', 10, 3 );
