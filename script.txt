@@ -1,6 +1,8 @@
-//Place into functions.php 
+//Place this code into functions.php 
 
-// insert the last login date for each user
+// This script is intended to create a new column into Users Admin Panel in Worpress. 
+//It will insert the last login date for each user
+
 function insert_last_login( $login ) 
 {
     global $user_id;
